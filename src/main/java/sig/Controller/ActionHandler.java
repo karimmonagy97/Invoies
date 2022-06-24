@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DateFormatter;
@@ -95,18 +96,21 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
                  File headf=fc.getSelectedFile();
                  Path headp=Paths.get(headf.getAbsolutePath());
                  List<String>headerL=Files.readAllLines(headp);
-                 System.out.println("read the file");
                  
                  ArrayList <InvoiceHeader>Invoices=new ArrayList<>();
                  for(int i=0;i<headerL.size();i++){
-                     String[]parts=headerL.get(i).split(",");
-                     int invnum=Integer.parseInt(parts[0]);
-                     String invdate=parts[1];
-                     String invcustomer=parts[2];
-                    
-                     InvoiceHeader Invoice=new InvoiceHeader(invnum,invdate,invcustomer);
-                     Invoices.add(Invoice);
-                     System.out.println("check");
+                     try{
+
+                        String[]parts=headerL.get(i).split(",");
+                        int invnum=Integer.parseInt(parts[0]);
+                        String invdate=parts[1];
+                        String invcustomer=parts[2];
+
+                        InvoiceHeader Invoice=new InvoiceHeader(invnum,invdate,invcustomer);
+                        Invoices.add(Invoice);
+                     }catch(Exception e){
+                        JOptionPane.showMessageDialog(Frame, "Wrong Invoice Format", "Error", JOptionPane.ERROR_MESSAGE);
+                     }
                  }
                  
                   res=fc.showOpenDialog(Frame);
@@ -115,29 +119,33 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
                      Path Linep=Paths.get(Linef.getAbsolutePath());
                     
                      List<String>Linel=Files.readAllLines(Linep);
-                     System.out.println("CheckLines");
                      
                      
                      for(int i=0;i<Linel.size();i++){
-                         String[]Lparts=Linel.get(i).split(",");
-                         int invonum =Integer.parseInt(Lparts[0]);
-                         String Product=Lparts[1];
-                         double price=Double.parseDouble(Lparts[2]);
-                         int count=Integer.parseInt(Lparts[3]);
-                         InvoiceHeader Invo=null;
-                         for(int j=0;j<Invoices.size();j++){
-                             if(Invoices.get(j).getNum()==invonum){
-                                 Invo=Invoices.get(j);
-                                  break;
-                             }
+                         try{
+                            String[]Lparts=Linel.get(i).split(",");
+                            int invonum =Integer.parseInt(Lparts[0]);
+                            String Product=Lparts[1];
+                            double price=Double.parseDouble(Lparts[2]);
+                            int count=Integer.parseInt(Lparts[3]);
+                            InvoiceHeader Invo=null;
+                            for(int j=0;j<Invoices.size();j++){
+                                if(Invoices.get(j).getNum()==invonum){
+                                    Invo=Invoices.get(j);
+                                     break;
+                                }
                              
                                
                          }
                      
                          InvoiceLine Line=new InvoiceLine(invonum,Product,price,count,Invo);
                          Invo.getLine().add(Line);
+                         }catch(Exception e){
+                              JOptionPane.showMessageDialog(Frame, "Wrong Line Format", "Error", JOptionPane.ERROR_MESSAGE);
+
+                         }
                      }
-                     System.out.println("Hello");
+                     
                   } 
                   Frame.setInvoices(Invoices);
                   InvotableModel InvoTableModel=new InvotableModel(Invoices);
@@ -147,6 +155,7 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
          }
          }catch (IOException ex) {
                  ex.printStackTrace();
+                 JOptionPane.showMessageDialog(Frame, "cannot Find the File", "Error", JOptionPane.ERROR_MESSAGE);
              }
          
             
@@ -160,7 +169,7 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
             String headersvc=invoice.get(i).getAsci();
             Headersvc+=headersvc;
             Headersvc+="\n";
-            System.out.println("Love");
+            
         }
         for(int i=0;i<invoice.size();i++){
             for(int j=0;j<invoice.get(i).getLine().size();j++){
@@ -190,7 +199,7 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
               }
          }
          }catch(Exception e) {
-             
+             JOptionPane.showMessageDialog(Frame, "cannot Find the File", "Error", JOptionPane.ERROR_MESSAGE);
          }
     }
 
@@ -246,10 +255,14 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
     private void createOK() {
         //invoDialog.putdate();
         String Date=invoDialog.getInvDate().getText();
+        //try {
+            //sdf.parse(Date);
+        //} catch (ParseException ex) {
+          //  Logger.getLogger(ActionHandler.class.getName()).log(Level.SEVERE, null, ex);
+           // JOptionPane.showMessageDialog(Frame, "Wrong Date Format", "Error", JOptionPane.ERROR_MESSAGE);
+
         String Name=invoDialog.getCusName().getText();
-        System.out.println("HII");
         int num=Frame.getnextnum()+1;
-        System.out.println(num);
         InvoiceHeader Invoice=new InvoiceHeader(num,Date,Name);
         Frame.getInvoices().add(Invoice);
         Frame.getInvoTableModel().fireTableDataChanged();
@@ -266,6 +279,7 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
     }
 
     private void LineOK() {
+        try{
         String product=lineDialog.getProductName().getText();
         //String numberst=lineDialog.getNumber().getText();
         //int number=Integer.parseInt(numberst);
@@ -273,6 +287,8 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
         int count=Integer.parseInt(countst);
         String pricest=lineDialog.getPriceT().getText();
         int price=Integer.parseInt(pricest);
+        
+        
         if(Frame.getInvoicetable().getSelectedRow()!=-1){
             InvoiceHeader Invoice=Frame.getInvoices().get(Frame.getInvoicetable().getSelectedRow());
             InvoiceLine Line=new InvoiceLine(Invoice.getNum(),product,price,count,Invoice);
@@ -281,9 +297,13 @@ public class ActionHandler implements ActionListener , ListSelectionListener{
             linetableModel.fireTableDataChanged();
             Frame.getInvoTableModel().fireTableDataChanged();
         }
-        invoDialog.setVisible(false);
-        invoDialog.dispose();
-        invoDialog=null;
+         }catch(NumberFormatException e){
+              JOptionPane.showMessageDialog(Frame, "Enter right number Format", "Error", JOptionPane.ERROR_MESSAGE);
+
+        }
+        lineDialog.setVisible(false);
+        lineDialog.dispose();
+        lineDialog=null;
         
     }
 

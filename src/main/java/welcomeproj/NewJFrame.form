@@ -225,14 +225,8 @@
       </Properties>
     </Component>
     <Component class="java.awt.Label" name="number">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="label5"/>
-      </Properties>
     </Component>
     <Component class="java.awt.Label" name="customer">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="label6"/>
-      </Properties>
     </Component>
     <Component class="java.awt.Label" name="date">
     </Component>

@@ -15,8 +15,6 @@ import javax.swing.JTextField;
  * @author dell
  */
 public class lineDialog extends JDialog {
-    private JLabel number;
-    private JTextField numberT;
     private JLabel Product;
     private JTextField ProductName;
     private JLabel count;
@@ -29,8 +27,6 @@ public class lineDialog extends JDialog {
     private JButton buttonCancel;
     
     public lineDialog(NewJFrame Frame){
-        number =new JLabel("Enter the number of invoice");
-        numberT=new JTextField(20);
         Product=new JLabel("Enter the product");
         ProductName=new JTextField(20);
         count=new JLabel("Enter the count");
@@ -53,8 +49,6 @@ public class lineDialog extends JDialog {
         buttonCancel.setActionCommand("LineCancel");
         
         setLayout(new GridLayout(7,3));
-        add(number);
-        add(numberT);
         add(Product);
         add(ProductName);
         add(count);
@@ -68,9 +62,6 @@ public class lineDialog extends JDialog {
         pack();
     }
 
-    public JLabel getNumber() {
-        return number;
-    }
 
     public JTextField getProductName() {
         return ProductName;

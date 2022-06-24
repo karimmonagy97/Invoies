@@ -90,10 +90,6 @@ public class NewJFrame extends javax.swing.JFrame {
 
         label4.setText("Total");
 
-        number.setText("label5");
-
-        customer.setText("label6");
-
         itemtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 

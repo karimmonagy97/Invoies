@@ -19,7 +19,8 @@ import javax.swing.JTextField;
  */
 public class invoDialog extends JDialog {
     private JTextField cusName;
-    private JTextField invDate;
+   //private JTextField invDate;
+    private JLabel invDate;
     private JLabel customerName;
     private JLabel invDateL;
     private JButton buttonOk;
@@ -28,10 +29,14 @@ public class invoDialog extends JDialog {
         customerName=new JLabel("Customer Name");
         cusName=new JTextField(20);
         invDateL=new JLabel("Date is");
-        //SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd");
+        Date date=new Date();
+        
+        SimpleDateFormat s=new SimpleDateFormat("dd-MM-yyyy");
+        String strDate=s.format(date);
+        invDate=new JLabel(strDate);
         //Date d=new Date();
         //invDate.setText(s.format(d));
-        invDate=new JTextField(20);
+        //invDate=new JTextField(20);
         buttonOk=new JButton("OK");
         buttonCancel=new JButton("Cancel");
         
@@ -58,12 +63,7 @@ public class invoDialog extends JDialog {
         return cusName;
     }
 
-    public JTextField getInvDate() {
+    public JLabel getInvDate() {
         return invDate;
-    }
-    public void putdate(){
-        SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd");
-        Date d=new Date();
-        invDate.setText(s.format(d));
     }
 }
